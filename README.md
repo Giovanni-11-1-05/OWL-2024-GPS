@@ -1,2 +1,2 @@
 # OWL-2024-GPS
-Giovanni's GPS code project 
+OWL GPS code project 2024
