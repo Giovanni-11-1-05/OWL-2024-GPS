@@ -10,4 +10,3 @@ Most of the files should be able to be deleted as they are not relevant to our p
 Setting up the GPS. I used Pins 3 and 5 for I2C. Pin one for 3V3 power and pin 6 for ground. Wired using the Qwiic connect to breadboard female wires. Blue is SDA, Yellow is SCL, Red is 3V3 (power 3.3V), Black GND.
 
 ![I2C ports](https://cdn.sparkfun.com/assets/learn_tutorials/4/4/9/pin-labels-on-pi-ver2.png)
-![Raspberry PI pinout]([http://url/to/img.png](https://www.raspberrypi.com/documentation/computers/images/GPIO-Pinout-Diagram-2.png?hash=df7d7847c57a1ca6d5b2617695de6d46)
