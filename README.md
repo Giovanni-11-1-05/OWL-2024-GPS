@@ -1,48 +1,14 @@
-## GPS Drivers for QuAD RC1
+Any questions you can contact me at gmalone@calpoly.edu or on teams
+Steps to making the code run.
+All non default pi libraries are included within the code I shared. 
+Pico.h is to change the pins to the I2C pins of the PI 5. All other functions are commented out if they are needed later.
+Files with errors are sfe_bus.h and SparkFun_u-blox_GNSS_v3.h This is due to not knowing what i2c_inst_t does and where it comes from.
+Errors in u-blox_GNSS.cpp are from not having the correct time functions. This is hopefully partially solved by importing <chrono> The specific functions that would replace the ones used in u-blox_GNSS.cpp. This library is imported in u-bloc_GNSS.h. I do not understand what the timing functions are doing so I cannot replace it.
+Finally in the file that will actually fetch the latitude and longitude is max10_lat_long_test.cpp. All of the GPIO functions should be within lgpio library. https://abyz.me.uk/lg/index.html.
+Most of the files should be able to be deleted as they are not relevant to our purpose if we need to trim file size.
 
-This library adapts the Sparkfun Arduino library for the MAX-M10S 
-GNSS module for use with the Raspberry Pi Pico SDK, specifically tailored 
-for the RP2040 on the QuAD RC1 board. 
+Setting up the GPS. I used Pins 3 and 5 for I2C. Pin one for 3V3 power and pin 6 for ground. Wired using the Qwiic connect to breadboard female wires. Blue is SDA, Yellow is SCL, Red is 3V3 (power 3.3V), Black GND.
 
+![I2C ports](https://cdn.sparkfun.com/assets/learn_tutorials/4/4/9/pin-labels-on-pi-ver2.png)
+![Raspberry PI pinout]([http://url/to/img.png](https://www.raspberrypi.com/documentation/computers/images/GPIO-Pinout-Diagram-2.png?hash=df7d7847c57a1ca6d5b2617695de6d46))
 
-## Software
-
-For developing code for the Pico, it is advisable to establish a Linux development environment. 
-If on a Windows machine, VMware is a good option for setting up a virtual machine, from where
-a Linux distro can then be installed. Ubuntu is a great, user-friendly choice for getting into Linux. 
-
-* VMWare Workstation Player - https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html.html.html
-* Ubuntu - https://ubuntu.com/download/desktop
-
-Be sure to read through this manual for installing the Pico SDK onto your machine:
-* Getting started with Raspberry Pi Pico - https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf
-
-It will also be beneficial to setup and install Picotools for quicker loading and flashing of programs onto 
-your Pico board. 
-
-
-## Important Files
-
-Within the QuAD RC1 repository, the GNSS library is located under the `/max_10` directory. Some important files are:
-
-* `sfe_bus.cpp` and `sfe_bus.h`
-* `u-blox_GNSS.cpp` and `u-blox_GNSS.h`
-* `SparkFun_u-blox_GNSS_v3.h`
-
-~ and several other `u-blox_...` files that have not been modified from their original versions.
-
-
-## Test Program 
-
-Inside `/max_10/test` there is a test program `max10_lat_long_test.cpp` that initializes I2C and repeatedly
-outputs coordinates and altitude data from the GNSS module. 
-
-The test program is simple and can be used as a starting point for other GNSS applications, as it already performs 
-the setup process for the GPS module. 
-
-Some important parameters:
-```text
-Pico SDA PIN:    16
-Pico SCL PIN:    17
-MAX M10S DEV ADDR: 0x42
-```
