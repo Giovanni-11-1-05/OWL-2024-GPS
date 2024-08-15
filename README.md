@@ -9,4 +9,6 @@ Most of the files should be able to be deleted as they are not relevant to our p
 
 Setting up the GPS. I used Pins 3 and 5 for I2C. Pin one for 3V3 power and pin 6 for ground. Wired using the Qwiic connect to breadboard female wires. Blue is SDA, Yellow is SCL, Red is 3V3 (power 3.3V), Black GND.
 
+Pico SDK which is used for the translating the code to the pi 5 https://github.com/raspberrypi/pico-sdk/blob/master/src/host/hardware_timer/include/hardware/timer.h 
+
 ![I2C ports](https://cdn.sparkfun.com/assets/learn_tutorials/4/4/9/pin-labels-on-pi-ver2.png)
