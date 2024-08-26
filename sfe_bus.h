@@ -7,13 +7,16 @@
 
 #pragma once
 
-#include "pico.h"
-#include "pico/time.h"
-#include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/structs/i2c.h"
+#include "pico.h"//left as a way to edit less code. Code could be adapted to run without
+//#include "pico/time.h" replaced with stdint.h
+// #include "hardware/i2c.h" Replaced by LGPIO
+// #include "hardware/structs/i2c.h"
 #include <cstring>
 #include <stdio.h>
+#include <stdint.h>//fixed poblems with commeting out pico.time
+#include "lgpio.h"//source of I2C wrapper
+#include <stdlib.h>//Library imported instead of the file pico library equivilents
+
 
 namespace SparkFun_UBLOX_GNSS
 {
