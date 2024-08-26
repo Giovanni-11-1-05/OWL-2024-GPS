@@ -9,14 +9,15 @@
 
 
 // Not sure exactly which are necessary 
+#include <chrono>// timer library refrence with cplusplus.com/reference/chrono/ should have the required functions but I do not undstand the nderlying logic
 #include "pico.h"
-#include "pico/time.h"
-#include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/structs/i2c.h"
 #include <stdio.h>
 #include <string>
 #include <math.h>
+#include <stdint.h>//fixed poblems with commeting out pico.time
+#include "lgpio.h"//source of I2C wrapper
+#include <stdlib.h>//Library imported instead of the file pico library equivilents
+#include <unistd.h> //used for the usleep function in max10_lat_long_test.cpp
 
 #include "u-blox_config_keys.h"
 #include "u-blox_structs.h"
