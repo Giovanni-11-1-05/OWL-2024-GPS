@@ -19,7 +19,7 @@ int main() {
 
     stdio_init_all();
 
-    sleep_ms(1000);
+    usleep(1000000);//sleeps for 1 second
     
     gpio_put(KALMAN_3V3_EN_PIN, true);
 
@@ -53,7 +53,7 @@ int main() {
 
         printf("Latitude: %f, Longitude: %f\n", lat_deg, lon_deg);
         printf("Altitude MSL (m): %f, Altitude (m): %f\n\n", altitude_meters_msl, altitude_meters);
-        sleep_ms(1000);
+    usleep(1000000);//sleeps for 1 second
     }
 
     return 0;
