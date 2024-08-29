@@ -1086,14 +1086,14 @@ bool DevUBLOXGNSS::checkUbloxInternal(ubxPacket *incomingUBX, uint8_t requestedC
 // Returns true if new bytes are available
 bool DevUBLOXGNSS::checkUbloxI2C(ubxPacket *incomingUBX, uint8_t requestedClass, uint8_t requestedID)
 {
-  if (to_ms_since_boot(get_absolute_time()) - lastCheck >= i2cPollingWait) 
+  if (timeSinceBoot() - lastCheck >= i2cPollingWait) 
   {
     // Get the number of bytes available from the module
     uint16_t bytesAvailable = available();
 
     if (bytesAvailable == 0)
     {
-      lastCheck = to_ms_since_boot(get_absolute_time());
+      lastCheck = timeSinceBoot();
       return false;
     }
 
@@ -3122,7 +3122,7 @@ void DevUBLOXGNSS::processUBX(uint8_t incoming, ubxPacket *incomingUBX, uint8_t 
         if (debugPin >= 0)
         {
           gpio_put(debugPin, 0);
-          sleep_ms(10);
+          usleep(10000);//sleeps for 10 milliseconds
           gpio_put(debugPin, 1);
         }
 
@@ -5132,8 +5132,8 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
   packetBuf.classAndIDmatch = SFE_UBLOX_PACKET_VALIDITY_NOT_DEFINED;
   packetAuto.classAndIDmatch = SFE_UBLOX_PACKET_VALIDITY_NOT_DEFINED;
 
-  unsigned long startTime = to_ms_since_boot(get_absolute_time());
-  while (to_ms_since_boot(get_absolute_time()) < (startTime + (unsigned long)maxTime))
+  unsigned long startTime = timeSinceBoot();
+  while (timeSinceBoot() < (startTime + (unsigned long)maxTime))
   {
     if (checkUbloxInternal(outgoingUBX, requestedClass, requestedID) == true) // See if new data is available. Process bytes as they come in.
     {
@@ -5145,7 +5145,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+            unsigned long currentTime = timeSinceBoot();
             printf("waitForACKResponse: valid data and valid ACK received after %lu msec\n", currentTime - startTime);
         }
 #endif
@@ -5162,7 +5162,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("waitForACKResponse: no data and valid ACK after %lu msec\n", elapsedTime);
         }
 #endif
@@ -5181,7 +5181,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+            unsigned long currentTime = timeSinceBoot();
             printf("waitForACKResponse: data being OVERWRITTEN after %lu msec\n", currentTime - startTime);
         }
 #endif
@@ -5195,7 +5195,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("waitForACKResponse: CRC failed after %lu msec\n", elapsedTime);
         }
 #endif
@@ -5214,7 +5214,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+            unsigned long currentTime = timeSinceBoot();
             printf("waitForACKResponse: data was NOTACKNOWLEDGED (NACK) after %lu msec\n", currentTime - startTime);
         }
 #endif
@@ -5229,7 +5229,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+            unsigned long currentTime = timeSinceBoot();
             printf("waitForACKResponse: VALID data and INVALID ACK received after %lu msec\n", currentTime - startTime);
         }
 #endif
@@ -5243,7 +5243,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+            unsigned long currentTime = timeSinceBoot();
             printf("waitForACKResponse: INVALID data and INVALID ACK received after %lu msec\n", currentTime - startTime);
         }
 #endif
@@ -5264,7 +5264,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 
     } // checkUbloxInternal == true
 
-    sleep_ms(1); // Allow an RTOS to get an elbow in (#11)
+    usleep(1000); // Allow an RTOS to get an elbow in (#11)
   }           // while (millis() < (startTime + (unsigned long)maxTime))
 
   // We have timed out...
@@ -5275,7 +5275,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
     if (_printDebug == true)
     {
-        unsigned long currentTime = to_ms_since_boot(get_absolute_time());
+        unsigned long currentTime = timeSinceBoot();
         printf("waitForACKResponse: TIMEOUT with valid data after %lu msec. \n", currentTime - startTime);
     }
 #endif
@@ -5285,7 +5285,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForACKResponse(ubxPacket *outgoingUBX, uint
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
   if (_printDebug == true)
   {
-      unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+      unsigned long elapsedTime = timeSinceBoot() - startTime;
       printf("waitForACKResponse: TIMEOUT after %lu msec.\n", elapsedTime);
   }
 #endif
@@ -5310,8 +5310,8 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForNoACKResponse(ubxPacket *outgoingUBX, ui
   packetBuf.classAndIDmatch = SFE_UBLOX_PACKET_VALIDITY_NOT_DEFINED;
   packetAuto.classAndIDmatch = SFE_UBLOX_PACKET_VALIDITY_NOT_DEFINED;
 
-  unsigned long startTime = to_ms_since_boot(get_absolute_time());
-  while (to_ms_since_boot(get_absolute_time()) - startTime < maxTime)
+  unsigned long startTime = timeSinceBoot();
+  while (timeSinceBoot() - startTime < maxTime)
   {
     if (checkUbloxInternal(outgoingUBX, requestedClass, requestedID) == true) // See if new data is available. Process bytes as they come in.
     {
@@ -5324,7 +5324,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForNoACKResponse(ubxPacket *outgoingUBX, ui
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("waitForNoACKResponse: valid data with CLS/ID match after %lu msec\n", elapsedTime);
         }
 #endif
@@ -5343,7 +5343,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForNoACKResponse(ubxPacket *outgoingUBX, ui
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("waitForNoACKResponse: data being OVERWRITTEN after %lu msec\n", elapsedTime);
         }
 #endif
@@ -5371,7 +5371,7 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForNoACKResponse(ubxPacket *outgoingUBX, ui
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if (_printDebug == true)
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("waitForNoACKResponse: CLS/ID match but failed CRC after %lu msec\n", elapsedTime);
         }
 #endif
@@ -5379,13 +5379,13 @@ sfe_ublox_status_e DevUBLOXGNSS::waitForNoACKResponse(ubxPacket *outgoingUBX, ui
       }
     }
 
-    sleep_ms(1); // Allow an RTOS to get an elbow in (#11)
+    usleep(1000); // Allow an RTOS to get an elbow in (#11)
   }
 
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
   if (_printDebug == true)
   {
-      unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+      unsigned long elapsedTime = timeSinceBoot() - startTime;
       printf("waitForNoACKResponse: TIMEOUT after %lu msec. No packet received.\n", elapsedTime);
   }
 #endif
@@ -6210,9 +6210,9 @@ size_t DevUBLOXGNSS::pushAssistNowDataInternal(size_t offset, bool skipTime, con
 
         if (checkForAcks)
         {
-          unsigned long startTime = to_ms_since_boot(get_absolute_time());
+          unsigned long startTime = timeSinceBoot();
           bool keepGoing = true;
-          while (keepGoing && (to_ms_since_boot(get_absolute_time()) < (startTime + maxWait))) // Keep checking for the ACK until we time out
+          while (keepGoing && (timeSinceBoot() < (startTime + maxWait))) // Keep checking for the ACK until we time out
           {
             checkUbloxInternal(&packetCfg, 0, 0);               // Call checkUbloxInternal to parse any incoming data. Don't overwrite the requested Class and ID. We could be pushing this from another thread...
             if (packetUBXMGAACK->head != packetUBXMGAACK->tail) // Does the MGA ACK ringbuffer contain any ACK's?
@@ -6231,7 +6231,7 @@ size_t DevUBLOXGNSS::pushAssistNowDataInternal(size_t offset, bool skipTime, con
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
                   if ((_printDebug == true) || (_printLimitedDebug == true)) // This is important. Print this if doing limited debugging
                   {
-                      unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+                      unsigned long elapsedTime = timeSinceBoot() - startTime;
                       printf("pushAssistNowData: packet was accepted after %lu ms\n", elapsedTime);
                   }
 #endif
@@ -6271,7 +6271,7 @@ size_t DevUBLOXGNSS::pushAssistNowDataInternal(size_t offset, bool skipTime, con
           // We are not checking for Acks, so delay for maxWait millis unless we've reached the end of the data
           if ((dataPtr + packetLength + ((size_t)8)) < (offset + numDataBytes))
           {
-            sleep_ms(maxWait);
+            usleep(maxWait*1000);
           }
         }
       }
@@ -6729,11 +6729,11 @@ size_t DevUBLOXGNSS::readNavigationDatabase(uint8_t *dataBytes, size_t maxNumDat
 
   // Now keep checking for the arrival of UBX-MGA-DBD packets and write them to dataBytes
   bool keepGoing = true;
-  unsigned long startTime = to_ms_since_boot(get_absolute_time());
+  unsigned long startTime = timeSinceBoot();
   uint32_t databaseEntriesRX = 0; // Keep track of how many database entries are received
   size_t numBytesReceived = 0;    // Keep track of how many bytes are received
 
-  while (keepGoing && (to_ms_since_boot(get_absolute_time()) < (startTime + maxWait)))
+  while (keepGoing && (timeSinceBoot() < (startTime + maxWait)))
   {
     checkUbloxInternal(&packetCfg, 0, 0); // Call checkUbloxInternal to parse any incoming data. Don't overwrite the requested Class and ID. We could be pushing this from another thread...
 
@@ -6789,7 +6789,7 @@ size_t DevUBLOXGNSS::readNavigationDatabase(uint8_t *dataBytes, size_t maxNumDat
 #ifndef SFE_UBLOX_REDUCED_PROG_MEM
         if ((_printDebug == true) || (_printLimitedDebug == true)) // This is important. Print this if doing limited debugging
         {
-            unsigned long elapsedTime = to_ms_since_boot(get_absolute_time()) - startTime;
+            unsigned long elapsedTime = timeSinceBoot() - startTime;
             printf("readNavigationDatabase: ACK received. databaseEntriesRX is %d. numBytesReceived is %d. DBD read complete after %lu ms\n",
                   databaseEntriesRX, numBytesReceived, elapsedTime);
         }
