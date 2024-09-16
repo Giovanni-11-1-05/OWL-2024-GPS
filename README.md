@@ -3,16 +3,12 @@ Steps to making the code run.
 All non default pi libraries are included within the code I shared. 
 Pico.h is to change the pins to the I2C pins of the PI 5. All other functions are commented out if they are needed later.
 Files with errors are sfe_bus.h, SparkFun_u-blox_GNSS_v3.h, u-blox_GNSS.cpp, Cmakelists.txt and max10_lat_longtest.cpp.
-
-
-
-
-
-
-sfe_bus.h and SparkFun_u-blox_GNSS_v3.h This is due to not knowing what i2c_inst_t does and where it comes from.
-Errors in u-blox_GNSS.cpp are from not having the correct time functions. This is hopefully partially solved by importing <chrono> The specific functions that would replace the ones used in u-blox_GNSS.cpp. This library is imported in u-bloc_GNSS.h. I do not understand what the timing functions are doing so I cannot replace it.
-Finally in the file that will actually fetch the latitude and longitude is max10_lat_long_test.cpp. All of the GPIO functions should be within lgpio library. https://abyz.me.uk/lg/index.html.
-Most of the files should be able to be deleted as they are not relevant to our purpose if we need to trim file size.
+sfe_bus.h and SparkFun_ublox_GNSS_v3.h where i2c_inst_t is undefined. This is because these were from the old Pico SDK libraries.
+The included libraries that used to be used were "hardware/i2c.h" and "hardware/structs/i2c.h".
+The errors for u-blox_GNSS.cpp are from type assignment errors. I have no idea what these are from.
+CMakeLists.txt has errors prom having pico commands still in it I have not had the time to try and fix it.
+max10_lat_long_test.cpp errors are from the gpio initialization. The fix for this will depend on the implementation of i2c.
+I have already added the lgpio library but I have not been able to figure out what the current i2c commands are doing so I do not know how to replace them.
 
 Setting up the GPS. I used Pins 3 and 5 for I2C. Pin one for 3V3 power and pin 6 for ground. Wired using the Qwiic connect to breadboard female wires. Blue is SDA, Yellow is SCL, Red is 3V3 (power 3.3V), Black GND.
 
